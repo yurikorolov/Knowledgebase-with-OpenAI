@@ -1,0 +1,145 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env  # Virtual environment files (if used)
+
+# Byte-compiled / optimized / DLL files
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Distribution / packaging
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environments
+venv/
+ENV/
+env/
+
+# pytest
+.cache/
+
+# Django stuff:
+*.log
+
+# Flask/Django environments
+instance/
+.webassets-cache
+scrapy.cfg
+
+# pyenv
+.python-version
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pylint
+pylint-report.txt
+pylint-output.txt
+
+# Bandit security scanner
+.bandit/
+
+# macOS
+.DS_Store
+
+# Linux
+*~
+*.swp
+*.swo
+.*swp
+.*swo
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite3
+
+# Backup files
+*.bak
+*.orig
+*.save
+
+# Nginx
+nginx/logs/
+volumes/nginx/certs/
+volumes/nginx/logs/
+volumes/nginx/logs/*
+volumes/nginx/ssl/
+
+# PostgreSQL data
+volumes/db/
+
+# Redis
+volumes/redis/
+
+# Transformers cache
+volumes/transformers_cache/
+
+# Docker
+*.pid
+*.log
+docker-compose.override.yml
+docker-compose.override.*.yml
+volumes/app/
+
+# Ignore virtual environment if used for testing locally
+venv/
+.env
+
+# VSCode specific files
+.vscode/
+

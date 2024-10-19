@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+sqlmodel
+sqlalchemy
+pgvector
+python-dotenv
+openai
+sentence-transformers
+alembic
+psycopg2-binary
+redis
+pydantic
+transformers
+torch
+

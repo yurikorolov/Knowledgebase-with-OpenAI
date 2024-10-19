@@ -1,0 +1,49 @@
+# Use Python official image with Nvidia runtime for GPU support
+FROM nvidia/cuda:11.7.1-cudnn8-runtime-ubuntu20.04
+
+# Set the working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    nginx \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python 3.9
+RUN apt-get install -y python3.9 python3.9-dev python3-pip
+RUN ln -s /usr/bin/python3.9 /usr/bin/python && ln -s /usr/bin/pip3 /usr/bin/pip
+
+# Copy requirements.txt first for caching layers
+COPY ./app/requirements.txt /app/requirements.txt
+
+# Install Python dependencies with GPU-enabled PyTorch or TensorFlow
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+# Create directories for logs and cache
+RUN mkdir -p /var/log/app /transformers_cache
+
+# Copy the app code
+COPY ./app /app
+
+# Copy Nginx configuration
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+
+# Expose ports for Nginx
+EXPOSE 80 443
+
+# Add entrypoint script to wait for database readiness
+COPY ./entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Use GPU-enabled PyTorch and Hugging Face transformers
+RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu113
+RUN pip install transformers
+
+# Environment variables for transformer cache and model (to be set in Docker Compose)
+ENV TRANSFORMERS_CACHE=/transformers_cache
+
+# Start the app with entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
+

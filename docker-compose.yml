@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: knowledgebase-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./app:/app
+      - ./volumes/transformers_cache:/transformers_cache  # For Hugging Face models
+      - ./volumes/logs/app:/var/log/app
+    ports:
+      - "8000:8000"  # FastAPI is exposed on port 8000
+    depends_on:
+      - db
+      - redis
+    environment:
+      - TRANSFORMERS_CACHE=/transformers_cache  # Transformer cache path from .env
+      - MODEL_NAME=${MODEL_NAME}  # Define model in .env (e.g., DeepPavlov/rubert-base-cased-conversational)
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+    networks:
+      - app_network
+
+  nginx:
+    container_name: knowledgebase-nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    depends_on:
+      - app
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf  # Main Nginx configuration
+      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf  # Default site configuration
+      - ./nginx/ssl:/etc/nginx/ssl  # SSL certificates
+      - ./logs/nginx:/var/log/nginx  # Log files
+    environment:
+      - DOMAIN=${DOMAIN}
+      - EMAIL=${EMAIL}
+      - IS_PROD=${IS_PROD}
+    networks:
+      - app_network
+    ports:
+      - "80:80"
+      - "443:443"
+
+  db:
+    container_name: knowledgebase-db
+    image: postgres:14-alpine
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./volumes/db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"  # PostgreSQL is exposed on port 5432
+    networks:
+      - app_network
+
+  redis:
+    container_name: knowledgebase-redis
+    image: redis:6-alpine
+    restart: always
+    volumes:
+      - ./volumes/redis:/data
+    ports:
+      - "6379:6379"  # Redis default port
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
